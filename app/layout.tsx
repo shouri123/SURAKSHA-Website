@@ -3,6 +3,7 @@ import "./globals.css";
 import { PublicNavbar } from "@/components/navigation/PublicNavbar";
 import { PublicFooter } from "@/components/navigation/PublicFooter";
 import { AuthProvider } from "@/lib/supabase/auth-context";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "SURAKSHA | Hydrological Intelligence & Flood Decision Support",
@@ -34,6 +35,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <PublicFooter />
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
