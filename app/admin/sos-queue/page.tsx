@@ -153,7 +153,7 @@ export default function AdminSosQueuePage() {
                   <td className="py-3 px-3">
                     <div className="text-white font-medium">{item.citizen_name}</div>
                     <a
-                      href={`tel:${item.contact_phone}`}
+                      href={`tel:${item.contact_phone.replace(/[^0-9+() -]/g, "")}`}
                       className="text-[11px] font-mono text-emerald-400 hover:underline flex items-center gap-1 mt-0.5"
                     >
                       <Phone className="w-3 h-3" /> {item.contact_phone}

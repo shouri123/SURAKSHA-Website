@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
+import { checkRateLimit, getClientIp, rateLimitExceededResponse } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(`stations:${getClientIp(request)}`, 60, 60_000);
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(rateLimit.retryAfterSec);
+  }
+
   const backendUrl = process.env.SURAKSHA_BACKEND_URL;
   if (!backendUrl) return NextResponse.json({ detail: "The SURAKSHA service URL is not configured." }, { status: 503, headers: { "Cache-Control": "no-store" } });
   const controller = new AbortController();

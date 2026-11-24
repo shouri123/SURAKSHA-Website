@@ -5,7 +5,7 @@ import type { UserProfile } from "./auth-context";
 type WorkspaceRole = UserProfile["role"];
 
 export async function getAuthenticatedProfile() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError,

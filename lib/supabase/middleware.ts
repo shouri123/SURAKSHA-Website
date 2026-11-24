@@ -30,8 +30,18 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refresh auth token
-  await supabase.auth.getUser();
+  // Refresh auth token and enforce edge auth guard for protected portals
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+  if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/citizen"))) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/auth/login";
+    loginUrl.search = `?next=${encodeURIComponent(pathname.startsWith("/admin") ? "/admin" : "/citizen")}`;
+    return NextResponse.redirect(loginUrl);
+  }
 
   return supabaseResponse;
 }

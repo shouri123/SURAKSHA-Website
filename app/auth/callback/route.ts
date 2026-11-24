@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   }
 
   if (code) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       if (next === "/" && data?.user) {
@@ -28,7 +28,25 @@ export async function GET(request: Request) {
 
       const forwardedHost = request.headers.get("x-forwarded-host");
       const isLocalEnv = process.env.NODE_ENV === "development";
-      if (isLocalEnv || !forwardedHost || !/^[a-zA-Z0-9.-]+(:\d+)?$/.test(forwardedHost)) {
+      const allowedHosts = new Set<string>([new URL(origin).host]);
+      if (process.env.NEXT_PUBLIC_SITE_URL) {
+        try {
+          allowedHosts.add(new URL(process.env.NEXT_PUBLIC_SITE_URL).host);
+        } catch {
+          // Ignore malformed site URL
+        }
+      }
+      if (process.env.VERCEL_URL) allowedHosts.add(process.env.VERCEL_URL);
+      if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        allowedHosts.add(process.env.VERCEL_PROJECT_PRODUCTION_URL);
+      }
+
+      if (
+        isLocalEnv ||
+        !forwardedHost ||
+        !/^[a-zA-Z0-9.-]+(:\d+)?$/.test(forwardedHost) ||
+        !allowedHosts.has(forwardedHost)
+      ) {
         return NextResponse.redirect(new URL(next, origin));
       }
       return NextResponse.redirect(new URL(next, `https://${forwardedHost}`));

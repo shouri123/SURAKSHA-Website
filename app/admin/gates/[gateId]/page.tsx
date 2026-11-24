@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { ArrowLeft, Shield, Activity } from "lucide-react";
 
 interface GateConfig {
@@ -94,12 +95,12 @@ const GATES_DATA: Record<string, GateConfig> = {
   },
 };
 
-export default function GateDetailPage({
-  params,
-}: {
-  params: { gateId: string };
-}) {
-  const data = GATES_DATA[params.gateId] || GATES_DATA["pre-run"];
+export default function GateDetailPage() {
+  const params = useParams<{ gateId?: string }>();
+  const gateId = typeof params?.gateId === "string" ? params.gateId : "pre-run";
+  const data = Object.hasOwn(GATES_DATA, gateId)
+    ? GATES_DATA[gateId]
+    : GATES_DATA["pre-run"];
   return (
     <div className="space-y-6 max-w-[1440px] mx-auto">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -121,7 +122,7 @@ export default function GateDetailPage({
               key={g.id}
               href={`/admin/gates/${g.id}`}
               className={`px-3 py-1 rounded-md text-xs font-mono font-semibold transition-colors ${
-                params.gateId === g.id
+                gateId === g.id
                   ? "bg-[#FFFFFF] text-white"
                   : "text-[#A69B88] hover:text-[#A1A1AA]"
               }`}
