@@ -37,6 +37,11 @@ export function MermaidRenderer({ chart, id }: MermaidRendererProps) {
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: "strict",
+          htmlLabels: false,
+          flowchart: {
+            htmlLabels: false,
+            useMaxWidth: true,
+          },
           theme: isDark ? "dark" : "neutral",
           fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
           themeVariables: isDark
