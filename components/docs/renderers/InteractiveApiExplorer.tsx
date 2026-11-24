@@ -282,7 +282,7 @@ print(response.json())`;
               aria-pressed={selectedMethod === method}
               className={`px-3 py-1 rounded-lg font-mono text-[11px] transition-colors ${
                 selectedMethod === method
-                  ? "bg-[#FFFFFF] text-white font-semibold shadow"
+                  ? "bg-emerald-600 text-white font-semibold shadow"
                   : "text-[#A69B88] hover:text-[#FFFFFF]"
               }`}
             >

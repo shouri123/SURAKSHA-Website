@@ -399,7 +399,7 @@ export default function AdminOverviewPage() {
                   onClick={() => setRiskFilter(status)}
                   className={`px-2.5 py-1 rounded-md text-[10px] font-mono font-semibold transition-colors ${
                     riskFilter === status
-                      ? "bg-[#FFFFFF] text-white"
+                      ? "bg-emerald-600 text-white"
                       : "text-[#A69B88] hover:text-[#A1A1AA]"
                   }`}
                 >

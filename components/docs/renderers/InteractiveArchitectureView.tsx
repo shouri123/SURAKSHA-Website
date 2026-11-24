@@ -129,7 +129,7 @@ export function InteractiveArchitectureView() {
           onClick={() => setActiveTab("agents")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "agents"
-              ? "bg-[#FFFFFF] text-white shadow-lg shadow-[#FFFFFF]/20"
+              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
               : "text-[#A69B88] hover:text-[#FFFFFF] hover:bg-[#0A0A0A]"
           }`}
         >
@@ -141,7 +141,7 @@ export function InteractiveArchitectureView() {
           onClick={() => setActiveTab("gates")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "gates"
-              ? "bg-[#FFFFFF] text-white shadow-lg shadow-[#FFFFFF]/20"
+              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
               : "text-[#A69B88] hover:text-[#FFFFFF] hover:bg-[#0A0A0A]"
           }`}
         >
@@ -153,7 +153,7 @@ export function InteractiveArchitectureView() {
           onClick={() => setActiveTab("adrs")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "adrs"
-              ? "bg-[#FFFFFF] text-white shadow-lg shadow-[#FFFFFF]/20"
+              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
               : "text-[#A69B88] hover:text-[#FFFFFF] hover:bg-[#0A0A0A]"
           }`}
         >
