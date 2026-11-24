@@ -5,6 +5,17 @@ import { DocItem } from "@/lib/docs";
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
 import { MermaidRenderer } from "@/components/docs/MermaidRenderer";
+
+let targetRelHookRegistered = false;
+function ensureTargetRelHook() {
+  if (targetRelHookRegistered) return;
+  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if (node.tagName === "A" && node.getAttribute("target") === "_blank") {
+      node.setAttribute("rel", "noopener noreferrer");
+    }
+  });
+  targetRelHookRegistered = true;
+}
 import { InteractiveApiExplorer } from "./InteractiveApiExplorer";
 import { InteractiveArchitectureView } from "./InteractiveArchitectureView";
 import { InteractiveModelCard } from "./InteractiveModelCard";
@@ -247,8 +258,9 @@ export function StructuredDocRenderer({ doc }: StructuredDocRendererProps) {
         )
         .replace(/<td>/gi, '<td class="p-3.5 leading-relaxed text-[var(--foreground)]/90">');
 
+      ensureTargetRelHook();
       return DOMPurify.sanitize(styledHtml, {
-        ADD_ATTR: ["target", "id", "class"],
+        ADD_ATTR: ["target", "id", "class", "rel"],
       });
     } catch {
       return `<p>Content render error.</p>`;

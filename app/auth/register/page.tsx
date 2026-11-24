@@ -29,8 +29,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMessage("Password must be at least 6 characters.");
+    if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters.");
       return;
     }
 
@@ -39,7 +39,7 @@ export default function RegisterPage() {
     try {
       const result = await signUp(email, password, fullName);
       if (result.error) {
-        setErrorMessage(result.error.message || "Failed to create account.");
+        setErrorMessage("Could not create an account with those details. Please check your input or try signing in.");
         setLoadingAction(null);
         return;
       }
@@ -189,10 +189,10 @@ export default function RegisterPage() {
             <input
               type="password"
               required
-              minLength={6}
+              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 bg-black text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-white transition-colors"
             />
           </div>
@@ -204,7 +204,7 @@ export default function RegisterPage() {
             <input
               type="password"
               required
-              minLength={6}
+              minLength={8}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Repeat password"

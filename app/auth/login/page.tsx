@@ -44,7 +44,12 @@ export default function LoginPage() {
     try {
       const result = await signIn(email, password);
       if (result.error) {
-        setErrorMessage(result.error.message || "Failed to sign in. Please verify your credentials.");
+        const isProfileVerificationMsg = result.error.message.includes("SURAKSHA profile");
+        setErrorMessage(
+          isProfileVerificationMsg
+            ? result.error.message
+            : "Invalid email or password, or your email is not yet confirmed."
+        );
         setLoadingAction(null);
         return;
       }

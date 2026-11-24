@@ -426,4 +426,48 @@ test('code quality and security constraints are preserved', async () => {
   // auth callback: open-redirect and host-header injection guards
   assert.match(authCallback, /forwardedHost/);
   assert.match(authCallback, /new URL\(next, origin\)/);
+  assert.match(authCallback, /allowedHosts\.has\(forwardedHost\)/);
+});
+
+test('gateway, CSP headers, XSS sanitization, and SOS validation hardening are enforced', async () => {
+  const [nextConfig, vercelConfig, mermaidRenderer, docRenderer, middlewareAuth, registerPage, sosSource] =
+    await Promise.all([
+      read('next.config.mjs'),
+      read('vercel.json'),
+      read('components/docs/MermaidRenderer.tsx'),
+      read('components/docs/renderers/StructuredDocRenderer.tsx'),
+      read('lib/supabase/middleware.ts'),
+      read('app/auth/register/page.tsx'),
+      read('app/api/flood/sos/route.ts'),
+    ]);
+
+  assert.doesNotMatch(nextConfig, /\/api\/v1\/flood\/:path\*/);
+  assert.match(nextConfig, /poweredByHeader:\s*false/);
+  assert.match(vercelConfig, /"Content-Security-Policy"/);
+  assert.match(vercelConfig, /"Permissions-Policy"/);
+  assert.match(vercelConfig, /"X-XSS-Protection"[\s\S]*"0"/);
+  assert.match(mermaidRenderer, /DOMPurify\.sanitize\(/);
+  assert.match(docRenderer, /rel",\s*"noopener noreferrer"/);
+  assert.match(middlewareAuth, /pathname\.startsWith\("\/admin"\)/);
+  assert.match(registerPage, /password\.length < 8/);
+  assert.match(sosSource, /isValidUuid/);
+  assert.match(sosSource, /verifySameOrigin/);
+
+  const scenariosRoute = await loadTypeScriptRoute('app/api/flood/scenarios/route.ts');
+  const crossSiteResp = await scenariosRoute.POST(
+    new Request('https://website.test/api/flood/scenarios', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        origin: 'https://evil.example',
+        'sec-fetch-site': 'cross-site',
+      },
+      body: JSON.stringify({
+        scenario_id: 'BEST_01_CALM_BASELINE',
+        river_discharge_multiplier: 1,
+        precipitation_anomaly_mm: 0,
+      }),
+    })
+  );
+  assert.equal(crossSiteResp.status, 403);
 });

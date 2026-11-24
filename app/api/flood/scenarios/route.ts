@@ -1,4 +1,10 @@
 import { NextResponse } from "next/server";
+import {
+  checkRateLimit,
+  getClientIp,
+  rateLimitExceededResponse,
+  verifySameOrigin,
+} from "../../../../lib/security";
 
 const timeoutMs = 30_000;
 
@@ -26,7 +32,10 @@ async function proxy(path: string, init?: RequestInit) {
     });
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
-      return NextResponse.json({ detail: "The SURAKSHA service returned an unexpected response." }, { status: 502 });
+      return NextResponse.json(
+        { detail: "The SURAKSHA service returned an unexpected response." },
+        { status: 502, headers: { "Cache-Control": "no-store" } }
+      );
     }
     const body = await response.json();
     return NextResponse.json(body, { status: response.status, headers: { "Cache-Control": "no-store" } });
@@ -41,11 +50,23 @@ async function proxy(path: string, init?: RequestInit) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(`scenarios-get:${getClientIp(request)}`, 60, 60_000);
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(rateLimit.retryAfterSec);
+  }
   return proxy("/api/v1/flood/demo/scenarios");
 }
 
 export async function POST(request: Request) {
+  const originError = verifySameOrigin(request);
+  if (originError) return originError;
+
+  const rateLimit = checkRateLimit(`scenarios-post:${getClientIp(request)}`, 20, 60_000);
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(rateLimit.retryAfterSec);
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();

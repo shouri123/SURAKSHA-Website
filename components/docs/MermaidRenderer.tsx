@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import { Code2, Eye, AlertCircle } from "lucide-react";
 
 interface MermaidRendererProps {
@@ -73,11 +74,16 @@ export function MermaidRenderer({ chart, id }: MermaidRendererProps) {
         // Clean chart input: strip any backticks and ensure trimmed
         const cleanChart = chart.replace(/^```mermaid\s*/i, "").replace(/```$/, "").trim();
 
-        // Render diagram directly
+        // Render diagram directly and sanitize SVG output
         const { svg } = await mermaid.render(cleanId, cleanChart);
+        const safeSvg = DOMPurify.sanitize(svg, {
+          USE_PROFILES: { svg: true, svgFilters: true, html: true },
+          ADD_TAGS: ["foreignObject"],
+          FORBID_TAGS: ["script", "iframe", "object", "embed", "form"],
+        });
 
         if (isMounted) {
-          setSvgHtml(svg);
+          setSvgHtml(safeSvg);
           setLoading(false);
         }
       } catch (err: any) {
