@@ -23,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <meta name="color-scheme" content="dark light" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var theme=localStorage.getItem('suraksha-theme');if(theme==='light'||theme==='dark'){document.documentElement.classList.toggle('light',theme==='light');document.documentElement.classList.toggle('dark',theme==='dark')}}catch(_){}})()`,
@@ -35,7 +36,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
         />
       </head>
-      <body className="bg-[var(--background)] text-[var(--foreground)] flex flex-col min-h-screen selection:bg-[#10B981]/30 selection:text-white transition-colors duration-200">
+      <body className="bg-[var(--background)] text-[var(--foreground)] flex flex-col min-h-screen selection:bg-[#0FA978]/30 selection:text-white transition-colors duration-200">
         <MotionConfig reducedMotion="user">
           <ThemeProvider>
             <AuthProvider>

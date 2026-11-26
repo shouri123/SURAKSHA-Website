@@ -7,22 +7,20 @@ interface RiskGaugeProps {
   severity?: string;
 }
 
-export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, severity = "LOW" }) => {
-  // Clamp score between 0 and 100
+export const RiskGauge: React.FC<RiskGaugeProps> = ({ score }) => {
   const clampedScore = Math.max(0, Math.min(100, score));
-  // Needle angle: 0 score = -90 deg (left), 50 score = 0 deg (top), 100 score = +90 deg (right)
   const needleAngle = -90 + (clampedScore / 100) * 180;
 
   const getRiskLabel = (s: number) => {
-    if (s < 30) return "Low Risk";
-    if (s < 70) return "Moderate Risk";
-    return "High Risk";
+    if (s < 30) return "Low risk";
+    if (s < 70) return "Moderate risk";
+    return "High risk";
   };
 
   const getRiskColor = (s: number) => {
-    if (s < 30) return "#10B981"; // emerald
-    if (s < 70) return "#F59E0B"; // amber
-    return "#EF4444"; // red
+    if (s < 30) return "#0FA978";
+    if (s < 70) return "#F59E0B";
+    return "#EF4444";
   };
 
   return (
@@ -34,22 +32,20 @@ export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, severity = "LOW" })
       >
         <defs>
           <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#10B981" />
+            <stop offset="0%" stopColor="#0FA978" />
             <stop offset="50%" stopColor="#F59E0B" />
             <stop offset="100%" stopColor="#EF4444" />
           </linearGradient>
         </defs>
 
-        {/* Background Track Arc */}
         <path
           d="M 20 105 A 80 80 0 0 1 180 105"
           fill="none"
-          stroke="rgba(255, 255, 255, 0.15)"
+          stroke="rgba(151, 163, 158, 0.22)"
           strokeWidth="16"
           strokeLinecap="round"
         />
 
-        {/* Active Gradient Arc */}
         <path
           d="M 20 105 A 80 80 0 0 1 180 105"
           fill="none"
@@ -61,7 +57,6 @@ export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, severity = "LOW" })
           className="transition-all duration-700 ease-out"
         />
 
-        {/* Needle Pin */}
         <g
           transform={`translate(100, 105) rotate(${needleAngle})`}
           className="transition-transform duration-700 ease-out"
@@ -80,18 +75,17 @@ export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, severity = "LOW" })
         </g>
       </svg>
 
-      {/* Central Score Display */}
       <div className="text-center mt-1">
-        <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+        <div className="font-sans [font-variant-numeric:tabular-nums] text-2xl sm:text-3xl font-bold text-[var(--foreground)] tracking-tight">
           {clampedScore} <span className="text-sm font-normal text-[var(--muted-foreground)]">/ 100</span>
         </div>
         <div className="mt-1">
           <span
-            className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wider"
+            className="px-2.5 py-0.5 rounded-full text-[11px] font-medium font-sans"
             style={{
               backgroundColor: `${getRiskColor(clampedScore)}20`,
               color: getRiskColor(clampedScore),
-              border: `1px solid ${getRiskColor(clampedScore)}40`,
+              border: `1px solid ${getRiskColor(clampedScore)}45`,
             }}
           >
             {getRiskLabel(clampedScore)}

@@ -4,19 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/shared/BrandLogo";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  ArrowRight,
-  LayoutDashboard,
-  MapPin,
-  FlaskConical,
-  BookOpen,
-  Info,
-  LogOut,
-  User,
-} from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -36,11 +24,7 @@ export const PublicNavbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -76,10 +60,10 @@ export const PublicNavbar: React.FC = () => {
   }
 
   const links = [
-    { href: "/platform", label: "Platform", hasDropdown: true, icon: LayoutDashboard },
-    { href: "/research", label: "Research", icon: FlaskConical },
-    { href: "/docs", label: "Documentation", icon: BookOpen },
-    { href: "/about", label: "About", icon: Info },
+    { href: "/platform", label: "Platform", hasDropdown: true },
+    { href: "/research", label: "Research" },
+    { href: "/docs", label: "Documentation" },
+    { href: "/about", label: "About" },
   ];
 
   const portalHref =
@@ -105,16 +89,14 @@ export const PublicNavbar: React.FC = () => {
       transition={{ duration: prefersReducedMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="w-full px-6 sm:px-10 lg:px-14 h-16 sm:h-20 flex items-center justify-between gap-6">
-        {/* Brand Logo - Shield Mark + SURAKSHA on far left */}
         <BrandLogo className="brand-logo" />
 
-        {/* Desktop Navigation Links - Animated Glassmorphic Pill Dock */}
+        {/* Desktop Navigation Links */}
         <nav
-          className="hidden md:flex items-center gap-2.5 p-1.5 rounded-full nav-glass-dock"
+          className="hidden md:flex items-center gap-1.5 p-1 rounded-full nav-glass-dock"
           aria-label="Main Navigation"
         >
           {links.map((link) => {
-            const Icon = link.icon;
             const isActive =
               pathname === link.href ||
               (link.hasDropdown &&
@@ -124,11 +106,7 @@ export const PublicNavbar: React.FC = () => {
 
             if (link.hasDropdown) {
               return (
-                <div
-                  key={link.href}
-                  className="relative"
-                  ref={platformMenuRef}
-                >
+                <div key={link.href} className="relative" ref={platformMenuRef}>
                   <button
                     type="button"
                     onClick={() => setPlatformDropdownOpen(!platformDropdownOpen)}
@@ -137,87 +115,68 @@ export const PublicNavbar: React.FC = () => {
                     onKeyDown={(event) => {
                       if (event.key === "Escape") setPlatformDropdownOpen(false);
                     }}
-                    className={`nav-glass-pill group text-xs font-semibold cursor-pointer ${
-                      isActive ? "active text-[var(--foreground)]" : "text-[var(--foreground)]"
+                    className={`nav-glass-pill text-xs font-semibold cursor-pointer ${
+                      isActive ? "active text-[var(--foreground)]" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                     }`}
                   >
-                    <span className="icon-glass w-6 h-6 rounded-full">
-                      <Icon className="w-3.5 h-3.5 text-white transition-transform duration-300 group-hover:scale-110" />
-                    </span>
-                    <span className="relative z-10">{link.label}</span>
+                    <span>{link.label}</span>
                     <ChevronDown
-                      className={`relative z-10 w-3.5 h-3.5 opacity-80 transition-transform duration-300 ${
-                        platformDropdownOpen ? "rotate-180 opacity-100 text-white" : ""
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        platformDropdownOpen ? "rotate-180 text-[var(--brand)]" : ""
                       }`}
                     />
                   </button>
 
-                  {/* Dropdown Menu - Elevated translucent surface with Bento Grid */}
                   <AnimatePresence>
                     {platformDropdownOpen && (
                       <motion.div
                         role="menu"
-                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                        transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="absolute top-full left-0 mt-2.5 w-80 rounded-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border border-zinc-200 dark:border-white/10 p-2 shadow-2xl z-50"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: prefersReducedMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute top-full left-0 mt-2.5 w-80 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] p-1.5 shadow-[var(--shadow-overlay)] z-50"
                       >
                         <Link
                           href="/platform"
                           role="menuitem"
                           onClick={() => setPlatformDropdownOpen(false)}
-                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors text-xs group"
+                          className="block p-2.5 rounded-lg hover:bg-[var(--surface-raised)] transition-colors text-xs group"
                         >
-                          <div className="icon-glass w-8 h-8 rounded-lg text-white shrink-0 mt-0.5">
-                            <LayoutDashboard className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-white" />
-                          </div>
-                          <div>
-                            <span className="font-semibold text-zinc-900 dark:text-white block group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">
-                              Platform Overview
-                            </span>
-                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                              3D Basin simulation & reach models
-                            </span>
-                          </div>
+                          <span className="font-semibold text-[var(--foreground)] block group-hover:text-[var(--brand)] transition-colors">
+                            Platform Overview
+                          </span>
+                          <span className="text-[11px] text-[var(--muted-foreground)]">
+                            3D Basin simulation and reach models
+                          </span>
                         </Link>
 
                         <Link
                           href="/study-area"
                           role="menuitem"
                           onClick={() => setPlatformDropdownOpen(false)}
-                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors text-xs group"
+                          className="block p-2.5 rounded-lg hover:bg-[var(--surface-raised)] transition-colors text-xs group"
                         >
-                          <div className="icon-glass w-8 h-8 rounded-lg text-white shrink-0 mt-0.5">
-                            <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-white" />
-                          </div>
-                          <div>
-                            <span className="font-semibold text-zinc-900 dark:text-white block group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">
-                              Catchment Study Area
-                            </span>
-                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                              Middle Ganga reach stations & gauges
-                            </span>
-                          </div>
+                          <span className="font-semibold text-[var(--foreground)] block group-hover:text-[var(--brand)] transition-colors">
+                            Catchment Study Area
+                          </span>
+                          <span className="text-[11px] text-[var(--muted-foreground)]">
+                            Middle Ganga reach stations and gauges
+                          </span>
                         </Link>
 
                         <Link
                           href="/demo-lab"
                           role="menuitem"
                           onClick={() => setPlatformDropdownOpen(false)}
-                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors text-xs group"
+                          className="block p-2.5 rounded-lg hover:bg-[var(--surface-raised)] transition-colors text-xs group"
                         >
-                          <div className="icon-glass w-8 h-8 rounded-lg text-white shrink-0 mt-0.5">
-                            <FlaskConical className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-white" />
-                          </div>
-                          <div>
-                            <span className="font-semibold text-zinc-900 dark:text-white block group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">
-                              Simulation Lab
-                            </span>
-                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                              Interactive test scenarios & response checks
-                            </span>
-                          </div>
+                          <span className="font-semibold text-[var(--foreground)] block group-hover:text-[var(--brand)] transition-colors">
+                            Simulation Lab
+                          </span>
+                          <span className="text-[11px] text-[var(--muted-foreground)]">
+                            Interactive test scenarios and response checks
+                          </span>
                         </Link>
                       </motion.div>
                     )}
@@ -230,14 +189,11 @@ export const PublicNavbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`nav-glass-pill group text-xs font-semibold ${
-                  isActive ? "active text-[var(--foreground)]" : "text-[var(--foreground)]"
+                className={`nav-glass-pill text-xs font-semibold ${
+                  isActive ? "active text-[var(--foreground)]" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 }`}
               >
-                <span className="icon-glass w-6 h-6 rounded-full">
-                  <Icon className="w-3.5 h-3.5 text-white transition-transform duration-300 group-hover:scale-110" />
-                </span>
-                <span className="relative z-10">{link.label}</span>
+                <span>{link.label}</span>
               </Link>
             );
           })}
@@ -245,7 +201,6 @@ export const PublicNavbar: React.FC = () => {
 
         {/* Action Controls - Auth State Aware */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Dark / Light Mode Toggle */}
           <ThemeToggle />
 
           {user ? (
@@ -253,10 +208,10 @@ export const PublicNavbar: React.FC = () => {
               {profile ? (
                 <Link
                   href={portalHref}
-                  className="btn-glass-primary px-4 py-2 text-xs font-semibold text-white group"
+                  className="btn-glass-primary px-4 py-2 text-xs font-semibold group whitespace-nowrap"
                 >
-                  <span className="relative z-10">{portalLabel}</span>
-                  <ArrowRight className="relative z-10 w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  <span>{portalLabel}</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </Link>
               ) : (
                 <span role="status" className="px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -268,31 +223,31 @@ export const PublicNavbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-zinc-200 dark:border-white/10 bg-zinc-100 dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-white/20 text-xs text-zinc-900 dark:text-white transition-all cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-elevated)] hover:border-[var(--border-hover)] text-xs text-[var(--foreground)] transition-colors cursor-pointer whitespace-nowrap"
                 >
-                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-black font-bold text-[10px] grid place-items-center">
+                  <span className="w-6 h-6 rounded-full bg-[var(--brand)] text-[var(--primary-foreground)] font-bold text-[10px] grid place-items-center">
                     {profile?.full_name ? profile.full_name[0].toUpperCase() : "U"}
                   </span>
                   <span className="max-w-[100px] truncate text-xs font-medium">
                     {profile?.full_name?.split(" ")[0] || "Account"}
                   </span>
-                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                  <ChevronDown className="w-3 h-3 text-[var(--muted-foreground)]" />
                 </button>
 
                 <AnimatePresence>
                   {userDropdownOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                      transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute right-0 mt-2 w-56 rounded-xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border border-zinc-200 dark:border-white/10 p-1.5 shadow-2xl z-50"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute right-0 mt-2 w-56 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] p-1.5 shadow-[var(--shadow-overlay)] z-50"
                     >
-                      <div className="px-3 py-2 border-b border-zinc-200 dark:border-white/10 mb-1">
-                        <div className="text-xs font-semibold text-zinc-900 dark:text-white truncate">
+                      <div className="px-3 py-2 border-b border-[var(--border)] mb-1">
+                        <div className="text-xs font-semibold text-[var(--foreground)] truncate">
                           {profile?.full_name || user.email}
                         </div>
-                        <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mt-0.5">
+                        <div className="text-[11px] text-[var(--muted-foreground)] mt-0.5">
                           ROLE: {profile?.role || "Unavailable"}
                         </div>
                       </div>
@@ -300,7 +255,7 @@ export const PublicNavbar: React.FC = () => {
                         <Link
                           href={portalHref}
                           onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 rounded text-xs text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-raised)] transition-colors"
                         >
                           <User className="w-3.5 h-3.5" />
                           <span>Open Workspace</span>
@@ -316,7 +271,7 @@ export const PublicNavbar: React.FC = () => {
                           setUserDropdownOpen(false);
                           signOut();
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded text-xs text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors text-left cursor-pointer"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors text-left cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         <span>Sign Out</span>
@@ -329,10 +284,10 @@ export const PublicNavbar: React.FC = () => {
           ) : (
             <Link
               href="/auth/login"
-              className="btn-glass-primary px-5 py-2 text-xs font-semibold text-white group whitespace-nowrap inline-flex items-center gap-1.5 shrink-0"
+              className="btn-glass-primary px-5 py-2 text-xs font-semibold group whitespace-nowrap inline-flex items-center gap-1.5 shrink-0"
             >
-              <span className="relative z-10 whitespace-nowrap">Sign In</span>
-              <ArrowRight className="relative z-10 w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 shrink-0" />
+              <span className="whitespace-nowrap">Sign In</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 shrink-0" />
             </Link>
           )}
         </div>
@@ -342,10 +297,7 @@ export const PublicNavbar: React.FC = () => {
           <ThemeToggle />
           {user ? (
             profile ? (
-              <Link
-                href={portalHref}
-                className="btn-glass-primary px-3.5 py-1.5 text-xs font-medium text-white"
-              >
+              <Link href={portalHref} className="btn-glass-primary px-3.5 py-1.5 text-xs font-medium">
                 Workspace
               </Link>
             ) : (
@@ -354,16 +306,13 @@ export const PublicNavbar: React.FC = () => {
               </span>
             )
           ) : (
-            <Link
-              href="/auth/login"
-              className="btn-glass-primary px-3.5 py-1.5 text-xs text-white"
-            >
+            <Link href="/auth/login" className="btn-glass-primary px-3.5 py-1.5 text-xs">
               Sign In
             </Link>
           )}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+            className="p-2 rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] text-[var(--foreground)] hover:bg-[var(--surface-raised)] transition-colors"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -374,93 +323,97 @@ export const PublicNavbar: React.FC = () => {
       {/* Mobile Drawer */}
       <AnimatePresence initial={false}>
         {mobileMenuOpen && (
-        <motion.div
-          key="mobile-navigation"
-          initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="md:hidden border-b border-zinc-200 dark:border-[#1F2823] bg-white/95 dark:bg-[#141C18]/95 backdrop-blur-xl px-6 pt-3 pb-6 space-y-3"
-        >
-          <div className="flex flex-col space-y-1">
-            {links.map((link) => (
+          <motion.div
+            key="mobile-navigation"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden border-b border-[var(--border)] bg-[var(--surface)] px-6 pt-3 pb-6 space-y-3"
+          >
+            <div className="flex flex-col space-y-1">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-3 py-2 rounded-md text-xs font-medium ${
+                    pathname === link.href
+                      ? "bg-[var(--brand-soft)] text-[var(--brand)] font-semibold border border-[var(--brand-border)]"
+                      : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
-                key={link.href}
-                href={link.href}
+                href="/demo-lab"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-md text-xs font-medium ${
-                  pathname === link.href
-                    ? "bg-[#10B981]/15 text-[#059669] dark:text-[#10B981] font-semibold border border-[#10B981]/30"
-                    : "text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5"
+                  pathname === "/demo-lab"
+                    ? "bg-[var(--brand-soft)] text-[var(--brand)] font-semibold border border-[var(--brand-border)]"
+                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]"
                 }`}
               >
-                {link.label}
+                Simulation Lab
               </Link>
-            ))}
-            <Link
-              href="/demo-lab"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-md text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5"
-            >
-              Simulation Lab
-            </Link>
-          </div>
+            </div>
 
-          <div className="pt-4 border-t border-zinc-200 dark:border-white/10 flex flex-col gap-2">
-            {user ? (
-              <>
-                <div className="px-3 py-2 rounded-md bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-white">
-                    {profile?.full_name || user.email}
+            <div className="pt-4 border-t border-[var(--border)] flex flex-col gap-2">
+              {user ? (
+                <>
+                  <div className="px-3 py-2 rounded-md bg-[var(--surface-elevated)] border border-[var(--border)]">
+                    <div className="text-xs font-semibold text-[var(--foreground)]">
+                      {profile?.full_name || user.email}
+                    </div>
+                    <div className="text-[11px] text-[var(--muted-foreground)]">
+                      Role: {profile?.role || "Unavailable"}
+                    </div>
                   </div>
-                  <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase">
-                    Role: {profile?.role || "Unavailable"}
-                  </div>
-                </div>
-                {profile ? (
-                  <Link href={portalHref} onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full text-xs justify-center font-semibold">
-                      {portalLabel} →
+                  {profile ? (
+                    <Link href={portalHref} onClick={() => setMobileMenuOpen(false)}>
+                      <Button className="w-full text-xs justify-center font-semibold">
+                        {portalLabel} →
+                      </Button>
+                    </Link>
+                  ) : (
+                    <p role="status" className="px-3 py-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300">
+                      Account role could not be verified. Contact an administrator or sign out.
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut();
+                    }}
+                    className="w-full py-2 text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 rounded-md border border-rose-500/20 bg-rose-500/10 text-center cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/citizen" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full text-xs justify-center">
+                      Citizen Portal
                     </Button>
                   </Link>
-                ) : (
-                  <p role="status" className="px-3 py-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300">
-                    Account role could not be verified. Contact an administrator or sign out.
-                  </p>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    signOut();
-                  }}
-                  className="w-full py-2 text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 rounded-md border border-rose-500/20 bg-rose-500/10 text-center cursor-pointer"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/citizen" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full text-xs justify-center">
-                    Citizen Portal
-                  </Button>
-                </Link>
-                <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full text-xs justify-center">
-                    Operations Command Centre
-                  </Button>
-                </Link>
-                <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full text-xs justify-center font-semibold">
-                    Sign In →
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </motion.div>
-      )}
+                  <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full text-xs justify-center">
+                      Operations Command Centre
+                    </Button>
+                  </Link>
+                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full text-xs justify-center font-semibold">
+                      Sign In →
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </motion.header>
   );

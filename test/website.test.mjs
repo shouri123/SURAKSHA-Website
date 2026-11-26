@@ -204,6 +204,10 @@ test('simulation lab submits only active controls and accepts only synthetic eng
   assert.match(page, /\+6h|\+12h|\+24h/);
   assert.match(page, /Highest returned stage/);
   assert.match(page, /offline run did not check a live authority bulletin or external source/);
+  assert.doesNotMatch(page, /Sparkles|backdrop-blur-|shadow-md|shadow-2xl|\s·\s/);
+  assert.match(page, /hydrodynamic-river-routing\.jpg/);
+  assert.match(page, /sentinel1-sar-inundation\.jpg/);
+  assert.match(page, /<dialog/);
   assert.match(route, /river_discharge_multiplier/);
   assert.match(route, /unsupported scenario options/);
   assert.match(route, /catalog\?\.synthetic_data_only !== true/);

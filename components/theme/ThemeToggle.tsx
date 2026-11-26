@@ -2,8 +2,6 @@
 
 import React from "react";
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ThemeToggleProps {
   className?: string;
@@ -11,39 +9,22 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ className = "" }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative inline-flex items-center justify-center w-9 h-9 rounded-full border border-zinc-200/80 dark:border-white/15 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:border-zinc-300 dark:hover:border-white/30 hover:bg-white dark:hover:bg-zinc-800 transition-all cursor-pointer ${className}`}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-elevated)] text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-[var(--border-hover)] transition-colors cursor-pointer whitespace-nowrap ${className}`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       aria-pressed={theme === "dark"}
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
-      <AnimatePresence mode="wait" initial={false}>
-        {theme === "dark" ? (
-          <motion.div
-            key="moon"
-            initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            exit={{ scale: 0.5, rotate: 30, opacity: 0 }}
-            transition={{ duration: 0.18 }}
-          >
-            <Moon className="w-4 h-4 text-zinc-200" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="sun"
-            initial={{ scale: 0.5, rotate: 30, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            exit={{ scale: 0.5, rotate: -30, opacity: 0 }}
-            transition={{ duration: 0.18 }}
-          >
-            <Sun className="w-4 h-4 text-amber-500" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <span
+        aria-hidden="true"
+        className={`w-2 h-2 rounded-full ${isDark ? "bg-[var(--brand)]" : "bg-amber-600"}`}
+      />
+      <span>{isDark ? "Dark" : "Light"}</span>
     </button>
   );
 }

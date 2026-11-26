@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AlertTriangle, ShieldCheck, Waves } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface HydrometricStageStaffGaugeProps {
   stage: number;
@@ -20,7 +20,6 @@ export const HydrometricStageStaffGauge: React.FC<HydrometricStageStaffGaugeProp
   stationName = "Gandhi Ghat, Patna",
   embankmentStatus = "Stable",
 }) => {
-  // Gauge scale: 42.0m (bottom) to 52.0m (top) -> 10m range
   const minM = 42.0;
   const maxM = 52.0;
   const range = maxM - minM;
@@ -37,59 +36,62 @@ export const HydrometricStageStaffGauge: React.FC<HydrometricStageStaffGaugeProp
   const diffDanger = stage - dangerLevel;
 
   return (
-    <div className="p-3.5 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] backdrop-blur-md shadow-xs flex flex-col justify-between space-y-3">
+    <div className="p-3.5 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] flex flex-col justify-between space-y-3">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--foreground)]">
-          <Waves className="w-4 h-4 text-sky-500" />
-          <span>Stage Elevation Cross-Section</span>
-        </div>
-        <span className="text-[10px] font-mono text-[var(--muted-foreground)] truncate max-w-[140px]">
+      <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] pb-2">
+        <h3 className="font-heading text-xs font-semibold text-[var(--foreground)]">
+          Stage Elevation Cross-Section
+        </h3>
+        <span className="text-[11px] font-sans text-[var(--muted-foreground)] truncate max-w-[140px]">
           {stationName}
         </span>
       </div>
 
       {/* Main Infographic Staff Gauge & Cross-Section Graphic */}
       <div className="grid grid-cols-12 gap-3 items-center py-1">
-        {/* Left: River Cross-Section Column (col-span-8) */}
-        <div className="col-span-8 relative h-48 sm:h-52 rounded-xl bg-gradient-to-b from-sky-950/20 via-sky-900/10 to-sky-950/30 border border-[var(--border)] overflow-hidden">
-          {/* Background Grid Ticks */}
+        {/* Left: River Cross-Section Column */}
+        <div className="col-span-8 relative h-48 sm:h-52 rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
           <div className="absolute inset-0 flex flex-col justify-between p-2 pointer-events-none opacity-20">
             {[52, 50, 48, 46, 44, 42].map((m) => (
-              <div key={m} className="w-full border-b border-dashed border-[var(--foreground)] text-[8px] font-mono" />
+              <div key={m} className="w-full border-b border-dashed border-[var(--foreground)]" />
             ))}
           </div>
 
-          {/* HFL Reference Line (50.52m) */}
+          {/* HFL Reference Line */}
           <div
-            className="absolute left-0 right-0 border-t-2 border-dashed border-purple-500/80 z-20 flex items-center justify-between px-2 text-[9px] font-mono font-bold text-purple-400"
+            className="absolute left-0 right-0 border-t-2 border-dashed border-purple-500/80 z-20 flex items-center justify-between px-2 text-[10px] font-sans font-semibold text-purple-400"
             style={{ top: `${hflPosPct}%` }}
           >
-            <span className="bg-purple-950/80 px-1 rounded">HISTORIC HFL ({hfl.toFixed(2)}m)</span>
+            <span className="bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded border border-purple-500/30 [font-variant-numeric:tabular-nums]">
+              Historic HFL {hfl.toFixed(2)}m
+            </span>
           </div>
 
-          {/* Danger Level Line (48.60m) */}
+          {/* Danger Level Line */}
           <div
-            className="absolute left-0 right-0 border-t-2 border-dashed border-rose-500 z-20 flex items-center justify-between px-2 text-[9px] font-mono font-bold text-rose-500"
+            className="absolute left-0 right-0 border-t-2 border-dashed border-rose-500 z-20 flex items-center justify-between px-2 text-[10px] font-sans font-semibold text-rose-400"
             style={{ top: `${dangerPosPct}%` }}
           >
-            <span className="bg-rose-950/80 px-1 rounded">DANGER MARK ({dangerLevel.toFixed(2)}m)</span>
+            <span className="bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded border border-rose-500/30 [font-variant-numeric:tabular-nums]">
+              Danger {dangerLevel.toFixed(2)}m
+            </span>
           </div>
 
-          {/* Warning Level Line (47.60m) */}
+          {/* Warning Level Line */}
           <div
-            className="absolute left-0 right-0 border-t border-dashed border-amber-500 z-20 flex items-center justify-between px-2 text-[9px] font-mono font-semibold text-amber-500"
+            className="absolute left-0 right-0 border-t border-dashed border-amber-500 z-20 flex items-center justify-between px-2 text-[10px] font-sans font-semibold text-amber-400"
             style={{ top: `${warningPosPct}%` }}
           >
-            <span className="bg-amber-950/80 px-1 rounded">WARNING ({warningLevel.toFixed(2)}m)</span>
+            <span className="bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded border border-amber-500/30 [font-variant-numeric:tabular-nums]">
+              Warning {warningLevel.toFixed(2)}m
+            </span>
           </div>
 
-          {/* Animated Water Body Fill */}
+          {/* Water Body Fill */}
           <div
-            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-sky-600/90 via-sky-500/80 to-teal-400/80 transition-all duration-700 ease-out z-10"
+            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-sky-700/85 via-sky-600/75 to-teal-500/75 transition-all duration-700 ease-out z-10"
             style={{ height: `${waterHeightPct}%` }}
           >
-            {/* Animated Wave Crest Top */}
             <div className="absolute -top-1.5 left-0 right-0 h-3 overflow-hidden opacity-90">
               <svg className="w-full h-full text-teal-300" viewBox="0 0 100 20" preserveAspectRatio="none">
                 <path d="M0 10 C 20 0, 40 20, 60 10 C 80 0, 100 20, 120 10 L 120 20 L 0 20 Z" fill="currentColor" />
@@ -103,12 +105,12 @@ export const HydrometricStageStaffGauge: React.FC<HydrometricStageStaffGaugeProp
             style={{ top: `${waterTopPct}%` }}
           >
             <div
-              className={`px-2 py-0.5 rounded-md font-mono text-[11px] font-extrabold shadow-md flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded-md font-sans [font-variant-numeric:tabular-nums] text-[11px] font-bold flex items-center gap-1 border ${
                 isDanger
-                  ? "bg-rose-500 text-white animate-pulse"
+                  ? "bg-rose-600 border-rose-400 text-white"
                   : isWarning
-                  ? "bg-amber-500 text-black"
-                  : "bg-emerald-500 text-white"
+                  ? "bg-amber-500 border-amber-300 text-black"
+                  : "bg-[var(--brand)] border-[var(--brand-strong)] text-[var(--primary-foreground)]"
               }`}
             >
               <span>{stage.toFixed(2)}m</span>
@@ -116,52 +118,46 @@ export const HydrometricStageStaffGauge: React.FC<HydrometricStageStaffGaugeProp
           </div>
         </div>
 
-        {/* Right: Vertical Hydrometric Metric Bar (col-span-4) */}
+        {/* Right: Vertical Hydrometric Metric Bar */}
         <div className="col-span-4 flex flex-col justify-between h-48 sm:h-52 py-1 pl-1 space-y-2">
-          {/* Current Stage Display */}
           <div className="space-y-0.5">
-            <span className="text-[10px] font-mono uppercase text-[var(--muted-foreground)] block">
-              River Stage
+            <span className="text-[11px] font-sans text-[var(--muted-foreground)] block">
+              River stage
             </span>
-            <div className="font-mono text-xl sm:text-2xl font-extrabold text-[var(--foreground)] tracking-tight">
-              {stage.toFixed(2)} <span className="text-xs font-semibold text-[var(--muted-foreground)]">m</span>
+            <div className="font-sans [font-variant-numeric:tabular-nums] text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight">
+              {stage.toFixed(2)} <span className="text-xs font-medium text-[var(--muted-foreground)]">m</span>
             </div>
-            <div className="text-[10px] font-mono font-semibold">
+            <div className="text-[11px] font-sans font-medium [font-variant-numeric:tabular-nums]">
               {isDanger ? (
                 <span className="text-rose-500 flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3 shrink-0" />
-                  +{diffDanger.toFixed(2)}m OVER
+                  +{diffDanger.toFixed(2)}m over
                 </span>
               ) : isWarning ? (
-                <span className="text-amber-500">{(dangerLevel - stage).toFixed(2)}m to Danger</span>
+                <span className="text-amber-500">{(dangerLevel - stage).toFixed(2)}m to danger</span>
               ) : (
-                <span className="text-emerald-500 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 shrink-0" />
-                  Nominal Stage
-                </span>
+                <span className="text-[var(--brand)]">Nominal stage</span>
               )}
             </div>
           </div>
 
-          {/* Embankment Status Badge */}
-          <div className="p-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[10px] font-mono space-y-1">
-            <div className="text-[9px] text-[var(--muted-foreground)] uppercase">Embankment</div>
+          <div className="p-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[11px] font-sans space-y-0.5">
+            <div className="text-[10px] text-[var(--muted-foreground)]">Embankment</div>
             <div
-              className={`font-bold truncate ${
+              className={`font-semibold truncate ${
                 embankmentStatus === "Breach"
-                  ? "text-rose-500 font-extrabold"
+                  ? "text-rose-500"
                   : embankmentStatus === "Under Stress"
                   ? "text-amber-500"
-                  : "text-emerald-500"
+                  : "text-[var(--brand)]"
               }`}
             >
               {embankmentStatus}
             </div>
           </div>
 
-          {/* Bed Datum Reference */}
-          <div className="text-[9px] font-mono text-[var(--muted-foreground)] border-t border-[var(--border)] pt-1">
-            Zero Datum: {minM.toFixed(1)}m GTS
+          <div className="text-[10px] font-sans [font-variant-numeric:tabular-nums] text-[var(--muted-foreground)] border-t border-[var(--border)] pt-1">
+            Zero datum: {minM.toFixed(1)}m GTS
           </div>
         </div>
       </div>

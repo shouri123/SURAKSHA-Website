@@ -13,7 +13,6 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
   currentRisk = 15,
   currentExposed = 0,
 }) => {
-  // Comparative benchmark scenario points
   const baseline = { stage: 46.85, risk: 10, exposed: 0 };
   const rain = { stage: currentStage, risk: currentRisk, exposed: currentExposed };
   const surge = {
@@ -22,7 +21,6 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
     exposed: currentExposed > 0 ? Math.round(currentExposed * 1.35) : 12,
   };
 
-  // Safe height normalization: strictly bounded between 4px and 85px to stay within container
   const getStageHeight = (val: number) => {
     const clamped = Math.max(44.0, Math.min(50.0, val));
     return Math.max(12, Math.min(85, ((clamped - 44.0) / 6.0) * 85));
@@ -33,7 +31,6 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
     return Math.max(8, Math.min(85, (clamped / 100) * 85));
   };
 
-  // Dynamically scale exposed population up to the maximum scenario value
   const maxExposed = Math.max(100, baseline.exposed, rain.exposed, surge.exposed);
   const getExposedHeight = (val: number) => {
     if (val <= 0) return 4;
@@ -50,7 +47,7 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-end gap-4 text-[11px] font-medium text-[var(--muted-foreground)]">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[var(--subtle-foreground)]" />
           <span>Baseline</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -64,32 +61,29 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
       </div>
 
       {/* Bar Chart Area */}
-      <div className="grid grid-cols-3 gap-6 pt-4 border-b border-[var(--border)] pb-2 h-44 items-end overflow-hidden">
+      <div className="grid grid-cols-3 gap-6 pt-4 border-b border-[var(--border)] pb-2 h-44 items-end overflow-hidden [font-variant-numeric:tabular-nums]">
         {/* Metric 1: Peak Stage */}
         <div className="flex flex-col items-center h-full justify-end overflow-hidden">
           <div className="flex items-end gap-1.5 h-32 w-full justify-center overflow-hidden">
-            {/* Baseline */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-[var(--muted-foreground)]">{baseline.stage.toFixed(1)}</span>
+              <span className="text-[10px] text-[var(--muted-foreground)]">{baseline.stage.toFixed(1)}</span>
               <div
                 style={{ height: `${getStageHeight(baseline.stage)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-slate-400/70 hover:bg-slate-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-[var(--subtle-foreground)]/75 hover:bg-[var(--subtle-foreground)] transition-colors max-h-[85px]"
               />
             </div>
-            {/* Heavy Rainfall */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-sky-400 font-bold">{rain.stage.toFixed(2)}</span>
+              <span className="text-[10px] text-sky-400 font-semibold">{rain.stage.toFixed(2)}</span>
               <div
                 style={{ height: `${getStageHeight(rain.stage)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-all shadow-md shadow-sky-500/20 max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-colors max-h-[85px]"
               />
             </div>
-            {/* Rapid River Rise */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-amber-400">{surge.stage.toFixed(1)}</span>
+              <span className="text-[10px] text-amber-400">{surge.stage.toFixed(1)}</span>
               <div
                 style={{ height: `${getStageHeight(surge.stage)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-amber-400/80 hover:bg-amber-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-amber-400/85 hover:bg-amber-400 transition-colors max-h-[85px]"
               />
             </div>
           </div>
@@ -99,28 +93,25 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
         {/* Metric 2: Flood Risk (/100) */}
         <div className="flex flex-col items-center h-full justify-end overflow-hidden">
           <div className="flex items-end gap-1.5 h-32 w-full justify-center overflow-hidden">
-            {/* Baseline */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-[var(--muted-foreground)]">{baseline.risk}</span>
+              <span className="text-[10px] text-[var(--muted-foreground)]">{baseline.risk}</span>
               <div
                 style={{ height: `${getRiskHeight(baseline.risk)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-slate-400/70 hover:bg-slate-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-[var(--subtle-foreground)]/75 hover:bg-[var(--subtle-foreground)] transition-colors max-h-[85px]"
               />
             </div>
-            {/* Heavy Rainfall */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-sky-400 font-bold">{rain.risk}</span>
+              <span className="text-[10px] text-sky-400 font-semibold">{rain.risk}</span>
               <div
                 style={{ height: `${getRiskHeight(rain.risk)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-all shadow-md shadow-sky-500/20 max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-colors max-h-[85px]"
               />
             </div>
-            {/* Rapid River Rise */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-amber-400">{surge.risk}</span>
+              <span className="text-[10px] text-amber-400">{surge.risk}</span>
               <div
                 style={{ height: `${getRiskHeight(surge.risk)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-amber-400/80 hover:bg-amber-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-amber-400/85 hover:bg-amber-400 transition-colors max-h-[85px]"
               />
             </div>
           </div>
@@ -130,28 +121,25 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
         {/* Metric 3: Exposed People */}
         <div className="flex flex-col items-center h-full justify-end overflow-hidden">
           <div className="flex items-end gap-1.5 h-32 w-full justify-center overflow-hidden">
-            {/* Baseline */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-[var(--muted-foreground)]">0</span>
+              <span className="text-[10px] text-[var(--muted-foreground)]">0</span>
               <div
                 style={{ height: `${getExposedHeight(baseline.exposed)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-slate-400/70 hover:bg-slate-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-[var(--subtle-foreground)]/75 hover:bg-[var(--subtle-foreground)] transition-colors max-h-[85px]"
               />
             </div>
-            {/* Heavy Rainfall */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-sky-400 font-bold">{formatExposed(rain.exposed)}</span>
+              <span className="text-[10px] text-sky-400 font-semibold">{formatExposed(rain.exposed)}</span>
               <div
                 style={{ height: `${getExposedHeight(rain.exposed)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-all shadow-md shadow-sky-500/20 max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-sky-400 hover:bg-sky-300 transition-colors max-h-[85px]"
               />
             </div>
-            {/* Rapid River Rise */}
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] font-mono text-amber-400">{formatExposed(surge.exposed)}</span>
+              <span className="text-[10px] text-amber-400">{formatExposed(surge.exposed)}</span>
               <div
                 style={{ height: `${getExposedHeight(surge.exposed)}px`, maxHeight: "85px" }}
-                className="w-5 sm:w-7 rounded-t bg-amber-400/80 hover:bg-amber-400 transition-all max-h-[85px]"
+                className="w-5 sm:w-7 rounded-t bg-amber-400/85 hover:bg-amber-400 transition-colors max-h-[85px]"
               />
             </div>
           </div>
